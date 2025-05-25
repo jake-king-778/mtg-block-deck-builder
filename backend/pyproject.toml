@@ -1,0 +1,9 @@
+[project]
+name = "mtg-block-deck-builder"
+version = "0.1.0"
+description = "Backend to supply a RESTful way to find mtg cards in a particular block"
+readme = "../README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.115.12",
+]
