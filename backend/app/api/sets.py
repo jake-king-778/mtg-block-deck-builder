@@ -45,7 +45,7 @@ def get_standard_blocks() -> List[StandardBlock]:
                             code=r[4],
                         )
                         for r in results
-                        if r[2] <= last_standard_date <= r[3]
+                        if r[2] < last_standard_date <= r[3]
                     ],
                 )
             )
