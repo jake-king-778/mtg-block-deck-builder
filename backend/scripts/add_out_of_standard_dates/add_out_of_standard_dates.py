@@ -14,7 +14,13 @@ conn = psycopg2.connect(database="postgres",
                         port="5432")
 
 cursor = conn.cursor()
-
+cursor.execute(
+    """
+    ALTER TABLE sets ADD COLUMN IF NOT EXISTS laststandarddate TEXT;
+    
+    ALTER TABLE sets ALTER COLUMN laststandarddate SET DEFAULT '1900-01-01';
+    """
+)
 with open("mtg_standard_set_rotations.csv", "r") as set_file:
     mtg_set_csv = csv.reader(set_file)
     next(mtg_set_csv)
@@ -22,10 +28,11 @@ with open("mtg_standard_set_rotations.csv", "r") as set_file:
     max_release_date = '1900-01-01'
     min_release_date = '3000-01-01'
     for row in mtg_set_csv:
+        if row[1].split("-")[0] < "2014":
+            # these old records get kind of dicey with the input chatgpt
+            continue
         if row[1] > max_release_date:
             max_release_date = row[1]
-        if row[1] < min_release_date:
-            min_release_date = row[1]
         # seems chatgpt and the other dataset are not 100% matching release date (probably chatgpts fault)
         cursor.execute(
             """
@@ -33,14 +40,35 @@ with open("mtg_standard_set_rotations.csv", "r") as set_file:
             WHERE LOWER(name)=LOWER(%s)
             AND releasedate::timestamp between (%s::timestamp - INTERVAL '1 month') AND (%s::timestamp + INTERVAL '1 month')
             """,
-            [row[0],row[1],row[1]]
+            [row[0], row[1], row[1]]
         )
         found_record = cursor.fetchone()
         if found_record:
-            print(found_record[0])
+            if row[2].startswith("Still in Standard"):
+                cursor.execute(
+                    """
+                    UPDATE sets SET laststandarddate = '3000-01-01' WHERE id = %s
+                    """,
+                    [found_record[0]]
+                )
+                conn.commit()
+            else:
+                cursor.execute(
+                    """
+                    UPDATE sets SET laststandarddate = %s WHERE id = %s
+                    """,
+                    [row[2], found_record[0]]
+                )
+                conn.commit()
         else:
-            print(found_record)
-    print(max_release_date)
-    print(min_release_date)
+            raise ValueError(f"Not matching this record: {row}")
+        # set everything higher than the max to null to we know it's the current set
+        cursor.execute(
+            """
+            UPDATE sets SET laststandarddate = NULL WHERE releasedate::timestamp > %s::timestamp
+            """,
+            [max_release_date]
+        )
+        conn.commit()
 
 conn.close()
