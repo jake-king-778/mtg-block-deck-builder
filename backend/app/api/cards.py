@@ -16,12 +16,6 @@ class CardFilter(BaseModel):
 @router.get("/", response_model=List[Card])
 def get_standard_blocks(set_codes: List[str] = Query(None)) -> List[Card]:
     cursor = conn.cursor()
-    print("""
-        SELECT  id, uuid, name, manacost, power, toughness, type, text, keywords, rarity, types
-        FROM cards
-        WHERE setcode IN (%s)
-        """)
-    print([f"{','.join([f"'{s}'" for s in set_codes])}"])
     cursor.execute(
         """
         SELECT  id, uuid, name, manacost, power, toughness, type, text, keywords, rarity, types
