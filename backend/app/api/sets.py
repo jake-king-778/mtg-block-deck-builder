@@ -25,7 +25,7 @@ def get_standard_blocks() -> List[StandardBlock]:
 
     """
     sets can overlap the blocks because of how the rotation works, so every time there is a different
-    last standard date, we should see what was all standard as of last standard date - 1 day
+    last standard date, we should see what was all standard at the time
     """
     last_standard_date_set: Set[datetime] = set()
     output: List[StandardBlock] = []
