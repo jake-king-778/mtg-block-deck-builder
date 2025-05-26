@@ -1,10 +1,11 @@
+from datetime import datetime
 from typing import List
 
 from pydantic import BaseModel
 
-from app.api.types.Set import Set
+from app.api.types.MtgSet import MtgSet
 
 
 class StandardBlock(BaseModel):
-    last_standard_date: str
-    sets: List[Set]
+    last_standard_date: datetime
+    sets: List[MtgSet]
