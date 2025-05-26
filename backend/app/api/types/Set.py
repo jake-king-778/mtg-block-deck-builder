@@ -6,3 +6,4 @@ class Set(BaseModel):
     name: str
     last_standard_date: str
     release_date: str
+    code: str
