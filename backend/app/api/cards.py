@@ -22,7 +22,7 @@ def get_standard_blocks(set_codes: List[str] = Query(None)) -> List[Card]:
         FROM cards
         WHERE setcode=%s
         """
-        + ("OR setcode=%s" * (len(set_codes) - 1)),
+        + (" OR setcode=%s" * (len(set_codes) - 1)),
         set_codes,
     )
     return [
