@@ -31,7 +31,7 @@ with open("mtg_standard_set_rotations.csv", "r") as set_file:
     max_release_date = "1900-01-01"
     min_release_date = "3000-01-01"
     for row in mtg_set_csv:
-        if row[1].split("-")[0] < "2014":
+        if row[1].split("-")[0] < "2011":
             # these old records get kind of dicey with the input chatgpt
             continue
         if row[1] > max_release_date:

@@ -52,3 +52,4 @@ class Card(BaseModel):
     rarity: Rarity
     types: List[CardType]
     is_legendary: bool
+    set_code: str

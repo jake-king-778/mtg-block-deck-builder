@@ -18,7 +18,7 @@ def get_standard_blocks(set_codes: List[str] = Query(None)) -> List[Card]:
     cursor = conn.cursor()
     cursor.execute(
         """
-        SELECT  id, uuid, name, manacost, power, toughness, type, text, keywords, rarity, types
+        SELECT  id, uuid, name, manacost, power, toughness, type, text, keywords, rarity, types, setcode
         FROM cards
         WHERE setcode=%s
         """
@@ -39,6 +39,7 @@ def get_standard_blocks(set_codes: List[str] = Query(None)) -> List[Card]:
             rarity=Rarity[r[9].upper()],
             types=[CardType[t.upper()] for t in r[10].replace(" ", "").split(",")],
             is_legendary="legendary" in r[6].lower(),
+            set_code = r[11]
         )
         for r in cursor.fetchall()
     ]
