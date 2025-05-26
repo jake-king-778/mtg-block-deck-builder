@@ -24,7 +24,7 @@ source .venv/bin/activate
 
 Then run fast API to serve the build application!
 ```bash
-fastapi dev main.py
+fastapi run app/app.py
 ```
 
 And then view the application at http://127.0.0.1:8000/index.html
@@ -54,4 +54,11 @@ And load it into SQL (with psql or you may mount the file and load it up in the 
 
 ```bash
 psql -h localhost -p 5432 -U postgres -d postgres -f ~/Downloads/AllPrintings.psql
+```
+
+Last step, we need to load the standard dates which are probably(?) right.
+
+```bash
+cd backend/scripts/add_out_of_standard_dates
+python add_out_of_standard_dates.py
 ```
