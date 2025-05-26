@@ -37,3 +37,21 @@ backend.
 
 These docs are tbd as we will need to actually have the front end hitting the backend 
 before we can configure this through npm.
+
+## Initializing the Database
+
+First, download the all files .sql file here, make sure to select the postgres option:
+https://mtgjson.com/downloads/all-files/
+
+
+Then load up the dependent containers
+
+```bash
+docker-compose up
+```
+
+And load it into SQL (with psql or you may mount the file and load it up in the container)
+
+```bash
+psql -h localhost -p 5432 -U postgres -d postgres -f ~/Downloads/AllPrintings.psql
+```
