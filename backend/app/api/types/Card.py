@@ -37,6 +37,7 @@ class CardType(Enum):
     PLANESWALKER = auto()
     TOKEN = auto()
     DRAGON = auto()
+    BATTLE = auto()
 
 
 class Card(BaseSchema):
