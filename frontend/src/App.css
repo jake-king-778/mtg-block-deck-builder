@@ -1,8 +1,7 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  max-width: none; /* allow full width */
+  margin: 0; /* no auto centering */
+  padding: 0; /* optional */
 }
 
 .logo {
@@ -39,4 +38,33 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  z-index: 2000 !important;
+  opacity: 1 !important;
+  display: flex !important;
+  color: white !important;
+  background: rgba(0, 0, 0, 0.3);
+  width: 5%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-item {
+  padding-left: 100px;
+  box-sizing: border-box;
+  height: 100%; /* ensure padding doesn't break height */
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-indicators [data-bs-target] {
+  background-color: #333 !important;
+}
+
+.carousel-inner {
+  height: 400px;
 }

@@ -1,15 +1,15 @@
 from typing import List
 
 from fastapi import APIRouter, Query
-from pydantic import BaseModel
 
+from app.api.types.BaseSchema import BaseSchema
 from app.api.types.Card import Card, Rarity, CardType
 from app.db import conn
 
 router = APIRouter(prefix="/cards")
 
 
-class CardFilter(BaseModel):
+class CardFilter(BaseSchema):
     set_codes: List[str]
 
 

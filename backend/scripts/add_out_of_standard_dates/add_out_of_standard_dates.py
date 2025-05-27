@@ -17,6 +17,14 @@ conn = psycopg2.connect(
 )
 
 cursor = conn.cursor()
+
+# this index just needs to happen
+cursor.execute(
+    """
+    CREATE INDEX IF NOT EXISTS code_index ON sets(code);
+    """
+)
+
 cursor.execute(
     """
     ALTER TABLE sets ADD COLUMN IF NOT EXISTS laststandarddate TEXT;

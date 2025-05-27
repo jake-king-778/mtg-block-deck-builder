@@ -2,7 +2,7 @@ from enum import Enum, auto
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel
+from app.api.types.BaseSchema import BaseSchema
 
 
 class Rarity(Enum):
@@ -39,7 +39,7 @@ class CardType(Enum):
     DRAGON = auto()
 
 
-class Card(BaseModel):
+class Card(BaseSchema):
     id: int
     uuid: UUID
     name: str
