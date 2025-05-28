@@ -9,10 +9,13 @@ import SetSelectionModal from "./components/SetSelectionModal";
 import getUrl from "./utils/url";
 import type MtgCard from "./types/MtgCard";
 import MtgCardView from "./components/MtgCardView";
+import { Spinner } from "react-bootstrap";
 
 function App() {
   const [chosenBlock, setChosenBlock] = useState<StandardBlocks>();
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  console.log(isLoading);
   const [search, setSearch] = useState<string>("");
   const [selectedCards, setSelectedCards] = useState<Array<MtgCard>>([]);
   const [cardSelection, setCardSelection] = useState<Array<MtgCard>>([]);
@@ -26,10 +29,14 @@ function App() {
   }, []);
   useEffect(() => {
     if (chosenBlock) {
+      setIsLoading(true);
       fetch(
         `${getUrl()}/cards/?set_codes=${chosenBlock.sets.map((s) => s.code).join("&set_codes=")}`,
       ).then((response) => {
-        response.json().then((data) => setCardSelection(data));
+        response.json().then((data) => {
+          setCardSelection(data);
+          setIsLoading(false);
+        });
       });
     }
   }, [chosenBlock]);
@@ -67,82 +74,97 @@ function App() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div
-          style={{
-            display: "flex",
-            height: "calc(100vh - 60px)",
-            marginTop: "60px",
-            overflow: "hidden",
-          }}
-        >
+
+        {isLoading && (
           <div
             style={{
-              width: "220px",
-              backgroundColor: "#f8f9fa",
-              borderRight: "1px solid #ddd",
-              padding: "1rem",
-              position: "sticky",
-              top: "60px",
-              height: "calc(100vh - 60px)",
-              overflowY: "auto",
-              flexShrink: 0,
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
             }}
           >
-            <h5>Type Filter</h5>
-            <Form.Check label="Option 1" />
-            <Form.Check label="Option 2" />
-            <Form.Check label="Option 3" />
-            <br />
-            <Button onClick={() => setShowModal(true)}>Change Set</Button>
+            <Spinner animation="border" />
           </div>
-
+        )}
+        {!isLoading && (
           <div
             style={{
-              flex: 1,
-              minWidth: 0,
-              overflowY: "auto",
-              padding: "1rem",
               display: "flex",
-              flexWrap: "wrap",
-              gap: "1rem",
-              alignContent: "flex-start",
-            }}
-          >
-            {cardSelection
-              .filter((card) =>
-                card.name.toLowerCase().includes(search.toLowerCase()),
-              )
-              .map((card, index) => (
-                <MtgCardView
-                  key={index}
-                  card={card}
-                  onAddToDeck={(card) => handleCardSelect(card)}
-                />
-              ))}
-          </div>
-
-          {/* Right sticky sidebar */}
-          <div
-            style={{
-              width: "220px",
-              backgroundColor: "#f8f9fa",
-              borderLeft: "1px solid #ddd",
-              padding: "1rem",
-              position: "sticky",
-              top: "60px",
               height: "calc(100vh - 60px)",
-              overflowY: "auto",
-              flexShrink: 0,
+              marginTop: "60px",
+              overflow: "hidden",
             }}
           >
-            <h5>Selected Cards</h5>
-            <ListGroup>
-              {selectedCards.map((card) => (
-                <ListGroup.Item key={card.id}>{card.name}</ListGroup.Item>
-              ))}
-            </ListGroup>
+            <div
+              style={{
+                width: "220px",
+                backgroundColor: "#f8f9fa",
+                borderRight: "1px solid #ddd",
+                padding: "1rem",
+                position: "sticky",
+                top: "60px",
+                height: "calc(100vh - 60px)",
+                overflowY: "auto",
+                flexShrink: 0,
+              }}
+            >
+              <h5>Type Filter</h5>
+              <Form.Check label="Option 1" />
+              <Form.Check label="Option 2" />
+              <Form.Check label="Option 3" />
+              <br />
+              <Button onClick={() => setShowModal(true)}>Change Set</Button>
+            </div>
+
+            <div
+              style={{
+                flex: 1,
+                minWidth: 0,
+                overflowY: "auto",
+                padding: "1rem",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "1rem",
+                alignContent: "flex-start",
+              }}
+            >
+              {cardSelection
+                .filter((card) =>
+                  card.name.toLowerCase().includes(search.toLowerCase()),
+                )
+                .map((card, index) => (
+                  <MtgCardView
+                    key={index}
+                    card={card}
+                    onAddToDeck={(card) => handleCardSelect(card)}
+                  />
+                ))}
+            </div>
+
+            {/* Right sticky sidebar */}
+            <div
+              style={{
+                width: "220px",
+                backgroundColor: "#f8f9fa",
+                borderLeft: "1px solid #ddd",
+                padding: "1rem",
+                position: "sticky",
+                top: "60px",
+                height: "calc(100vh - 60px)",
+                overflowY: "auto",
+                flexShrink: 0,
+              }}
+            >
+              <h5>Selected Cards</h5>
+              <ListGroup>
+                {selectedCards.map((card) => (
+                  <ListGroup.Item key={card.id}>{card.name}</ListGroup.Item>
+                ))}
+              </ListGroup>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );
