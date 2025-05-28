@@ -62,3 +62,14 @@ Last step, we need to load the standard dates which are probably(?) right.
 cd backend/scripts/add_out_of_standard_dates
 python add_out_of_standard_dates.py
 ```
+
+
+## Run With docker-compose
+
+First, move your AllPrintings.psql file to backend/scripts/db_init, then
+
+```bash
+docker-compose up --build --
+```
+
+Note: it will take forever for the database to set up the tables and fill with data.

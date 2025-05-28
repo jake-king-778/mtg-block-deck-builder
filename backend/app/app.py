@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
@@ -11,15 +13,17 @@ app.mount("/static", StaticFiles(directory="../frontend/dist/"), name="static")
 app.include_router(sets_router)
 app.include_router(cards_router)
 
-origins = [
-    "http://localhost:8000",
-    "http://localhost:5173",
-]
+# TODO: need app config
+if os.getenv("ENV") != "test":
+    origins = [
+        "http://localhost:8000",
+        "http://localhost:5173",
+    ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )

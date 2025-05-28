@@ -2,6 +2,23 @@ services:
   database:
     image: "postgres:17"
     ports: 
-    - 5432:5432
+      - 5432:5432
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./backend/scripts/db_init/AllPrintings.psql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - common-net
+  service:
+    build: .
+    depends_on: 
+      database:
+        condition: service_started
+    ports:
+      - 8000:8000
+    environment:
+      - ENV=test
+    networks:
+      - common-net
+networks:
+  common-net: {}
