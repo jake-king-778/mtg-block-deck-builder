@@ -71,7 +71,8 @@ export default function MtgCardView({ card, onAddToDeck }: Props) {
         </Card.Title>
         {card.text && (
           <Card.Text>
-            <strong>{card.type}</strong><br/>
+            <strong>{card.type}</strong>
+            <br />
             {card.text.split("\\n").map((line, index) => (
               <React.Fragment key={index}>
                 <ManaTextRenderer text={line} />

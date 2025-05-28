@@ -6,11 +6,14 @@ type Props = {
 };
 
 export default function IconRenderer({ name, index }: Props) {
-  const totalStringSize = name.length;
+  // if the first letter is one is is a number and wont be mixed
+  const charsToIterate: string[] =
+    name.charAt(0) == "1" ? [name] : [...name.toLowerCase()];
+  const totalStringSize = charsToIterate.length;
   return (
     <span>
       [
-      {[...name.toLowerCase()].map((char, idx) => {
+      {charsToIterate.map((char, idx) => {
         const foundIconEntry = iconMap[char] ? iconMap[char] : iconMap[0];
         const IconComponent: any = foundIconEntry.icon;
         const color = foundIconEntry.color ? foundIconEntry.color : "#444";

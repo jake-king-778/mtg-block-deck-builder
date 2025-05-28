@@ -3,7 +3,8 @@
     "target": "ES2015",
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "outDir": "./dist"
   },
   "include": ["src", "src/types"]
 }
