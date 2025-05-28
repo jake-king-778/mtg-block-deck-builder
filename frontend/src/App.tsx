@@ -3,21 +3,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import type StandardBlocks from "./types/StandardBlock";
 import Form from "react-bootstrap/Form";
-import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import ListGroup from "react-bootstrap/ListGroup";
 import SetSelectionModal from "./components/SetSelectionModal";
 import getUrl from "./utils/url";
-
-interface MtgCard {
-  id: number;
-  name: string;
-  manaCost: string;
-  power: string;
-  toughness: string;
-  strength: string;
-  text: string;
-}
+import type MtgCard from "./types/MtgCard";
+import MtgCardView from "./components/MtgCardView";
 
 function App() {
   const [chosenBlock, setChosenBlock] = useState<StandardBlocks>();
@@ -97,7 +88,7 @@ function App() {
               flexShrink: 0,
             }}
           >
-            <h5>Filters</h5>
+            <h5>Type Filter</h5>
             <Form.Check label="Option 1" />
             <Form.Check label="Option 2" />
             <Form.Check label="Option 3" />
@@ -121,16 +112,12 @@ function App() {
               .filter((card) =>
                 card.name.toLowerCase().includes(search.toLowerCase()),
               )
-              .map((card) => (
-                <Card key={card.id} style={{ width: "18rem" }}>
-                  <Card.Body>
-                    <Card.Title>{card.name}</Card.Title>
-                    <Card.Text>{card.text}</Card.Text>
-                    <Button onClick={() => handleCardSelect(card)}>
-                      Select
-                    </Button>
-                  </Card.Body>
-                </Card>
+              .map((card, index) => (
+                <MtgCardView
+                  key={index}
+                  card={card}
+                  onAddToDeck={(card) => handleCardSelect(card)}
+                />
               ))}
           </div>
 
