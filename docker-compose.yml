@@ -1,7 +1,7 @@
 services:
   database:
     image: "postgres:17"
-    ports: 
+    ports:
       - 5432:5432
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
@@ -11,7 +11,7 @@ services:
       - common-net
   service:
     build: .
-    depends_on: 
+    depends_on:
       database:
         condition: service_started
     ports:
