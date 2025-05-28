@@ -1,64 +1,44 @@
 # mtg-block-deck-builder
 
-
-## Building
-
-To run, first build the front end
-
-```bash
-cd frontend
-npm run build
-```
-
-Then init the python virtualenv
-
-```bash
-cd backend
-uv sync
-```
-
-Then either run through uv or activate the virtual environment
-```bash
-source .venv/bin/activate
-```
-
-Then run fast API to serve the build application!
-```bash
-fastapi run app/app.py
-```
-
-And then view the application at http://127.0.0.1:8000/index.html
-
-
-## Running locally
-
-Ideally, you should run the appication through webpack while interacting with the python 
-backend.
-
-These docs are tbd as we will need to actually have the front end hitting the backend 
-before we can configure this through npm.
-
-## Initializing the Database
+## Getting the Datatbase Files
 
 First, download the all files .sql file here, make sure to select the postgres option:
 https://mtgjson.com/downloads/all-files/
 
+Place this file in backend/scripts/db_init/
 
-Then load up the dependent containers
+
+## Building
+
+It is all built through docker so you can just run
+
 
 ```bash
 docker-compose up
 ```
 
-And load it into SQL (with psql or you may mount the file and load it up in the container)
+And view the page at ip:8000/static/index.html, note: database will take a long time to initialize 
+if its your first time.
 
-```bash
-psql -h localhost -p 5432 -U postgres -d postgres -f ~/Downloads/AllPrintings.psql
+
+## Running locally
+
+Get the database running (this will take a long term if its your first time)
+
+```
+docker-compose up database
 ```
 
-Last step, we need to load the standard dates which are probably(?) right.
+Run the backend in one terminal:
 
 ```bash
-cd backend/scripts/add_out_of_standard_dates
-python add_out_of_standard_dates.py
+fastapi dev app/app.py
 ```
+
+Run webpack in a different terminal
+
+```bash
+npm run vite
+```
+
+View the website at http://localhost:5173/static/
