@@ -22,4 +22,4 @@ ENV PATH="/root/.local/bin/:$PATH"
 COPY backend .
 RUN uv sync --locked
 CMD uv run fastapi run app/app.py
-CMD ["./scripts/wait-for-it.sh", "database:5432", "--", "uv", "run", "fastapi", "run", "app/app.py"]
+CMD ["./scripts/wait-for-it.sh", "-t", "7200", "database:5432", "--", "uv", "run", "fastapi", "run", "app/app.py"]

@@ -11,7 +11,7 @@ app = FastAPI()
 
 # TODO: make this configuration or at least put it in a folder called frontend on the docker image
 if os.getenv("ENV") == "test":
-    app.mount("/static", StaticFiles(directory="../dist/"), name="static")
+    app.mount("/static", StaticFiles(directory="dist/"), name="static")
 else:
     app.mount("/static", StaticFiles(directory="../frontend/dist/"), name="static")
 app.include_router(sets_router)
