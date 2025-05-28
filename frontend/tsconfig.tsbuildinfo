@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/mtgcardview.tsx","./src/components/setselectionmodal.tsx","./src/icons/iconrenderer.tsx","./src/icons/icons.tsx","./src/types/mtgcard.tsx","./src/types/standardblock.tsx","./src/types/vite-env.d.ts","./src/utils/url.tsx"],"version":"5.8.3"}
