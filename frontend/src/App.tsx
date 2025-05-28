@@ -88,7 +88,7 @@ function App() {
               flexShrink: 0,
             }}
           >
-            <h5>Filters</h5>
+            <h5>Type Filter</h5>
             <Form.Check label="Option 1" />
             <Form.Check label="Option 2" />
             <Form.Check label="Option 3" />
@@ -113,7 +113,11 @@ function App() {
                 card.name.toLowerCase().includes(search.toLowerCase()),
               )
               .map((card, index) => (
-                <MtgCardView key={index} card={card} onAddToDeck={(card) => handleCardSelect(card)}/>
+                <MtgCardView
+                  key={index}
+                  card={card}
+                  onAddToDeck={(card) => handleCardSelect(card)}
+                />
               ))}
           </div>
 

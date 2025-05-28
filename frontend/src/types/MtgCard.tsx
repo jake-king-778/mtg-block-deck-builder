@@ -6,4 +6,5 @@ export default interface MtgCard {
   toughness: string;
   strength: string;
   text: string;
+  type: string;
 }

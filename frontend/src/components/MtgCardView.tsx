@@ -29,7 +29,7 @@ const ManaTextRenderer = ({ text }: any) => {
 
     // Push the IconRenderer component
     parts.push(
-      <IconRenderer key={index} index={index} name={symbol.toLowerCase()} />
+      <IconRenderer key={index} index={index} name={symbol.toLowerCase()} />,
     );
 
     index++;
@@ -51,25 +51,46 @@ export default function MtgCardView({ card, onAddToDeck }: Props) {
         <Card.Title>
           {card.name}
           <br />
-          {card.manaCost &&
+          {card.manaCost && (
             <span style={{ float: "right" }}>
               {card.manaCost.split("}").map((m, index) => {
-                m = m.replace("{", "")
+                m = m.replace("{", "").replace("/", "");
                 if (m) {
-                  return (<IconRenderer key={index} index={index} name={m.toLowerCase()}/>)
+                  return (
+                    <IconRenderer
+                      key={index}
+                      index={index}
+                      name={m.toLowerCase()}
+                    />
+                  );
                 }
-                })}
+              })}
             </span>
-          }
+          )}
           <br />
-        </Card.Title>{card.text &&
-          <Card.Text>{card.text.split("\\n").map((line, index) => (<React.Fragment key={index}><ManaTextRenderer text={line} /><br/></React.Fragment>))}</Card.Text>
-        }
-        {(card.power || card.toughness) &&
-          <span style={{ position: "absolute", bottom: "5px", right: "5px" }}><strong>{card.power}/{card.toughness}</strong></span>
-        }
+        </Card.Title>
+        {card.text && (
+          <Card.Text>
+            <strong>{card.type}</strong><br/>
+            {card.text.split("\\n").map((line, index) => (
+              <React.Fragment key={index}>
+                <ManaTextRenderer text={line} />
+                <br />
+              </React.Fragment>
+            ))}
+          </Card.Text>
+        )}
+        {(card.power || card.toughness) && (
+          <span style={{ position: "absolute", bottom: "5px", right: "5px" }}>
+            <strong>
+              {card.power}/{card.toughness}
+            </strong>
+          </span>
+        )}
         <br />
-        <div style={{ position: "absolute", top: 0, right: 0 }}><Button onClick={() => onAddToDeck(card)}>+</Button></div>
+        <div style={{ position: "absolute", top: 0, right: 0 }}>
+          <Button onClick={() => onAddToDeck(card)}>+</Button>
+        </div>
       </Card.Body>
     </Card>
   );
