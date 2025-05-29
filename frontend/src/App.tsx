@@ -11,14 +11,23 @@ import type MtgCard from "./types/MtgCard";
 import MtgCardView from "./components/MtgCardView";
 import { Spinner } from "react-bootstrap";
 
+type CardFilter = {
+  cardTypes: Set<string>;
+};
+
 function App() {
+  // TODO:// boy did I let this file get big
   const [chosenBlock, setChosenBlock] = useState<StandardBlocks>();
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  console.log(isLoading);
   const [search, setSearch] = useState<string>("");
-  const [selectedCards, setSelectedCards] = useState<Array<MtgCard>>([]);
-  const [cardSelection, setCardSelection] = useState<Array<MtgCard>>([]);
+  const [selectedCards, setSelectedCards] = useState<MtgCard[]>([]);
+  const [cardSelection, setCardSelection] = useState<MtgCard[]>([]);
+  const [filteredCardSelection, setFilteredCardSelection] = useState<MtgCard[]>(
+    [],
+  );
+
+  //init
   useEffect(() => {
     const storedChosenSet = localStorage.getItem("chosenSet");
     if (storedChosenSet !== null) {
@@ -33,13 +42,52 @@ function App() {
       fetch(
         `${getUrl()}/cards/?set_codes=${chosenBlock.sets.map((s) => s.code).join("&set_codes=")}`,
       ).then((response) => {
-        response.json().then((data) => {
+        response.json().then((data: MtgCard[]) => {
           setCardSelection(data);
+          setFilteredCardSelection(data);
           setIsLoading(false);
         });
       });
     }
   }, [chosenBlock]);
+
+  //filters
+  const [cardFilters, setCardFilters] = useState<CardFilter>({
+    cardTypes: new Set([
+      "creature",
+      "sorcery",
+      "land",
+      "instant",
+      "planeswalker",
+      "artifact",
+      "enchantment",
+    ]),
+  });
+  const updateTypeFilter = (target: any) => {
+    if (target.checked) {
+      cardFilters.cardTypes.add(target.value.toLowerCase());
+      setCardFilters(cardFilters);
+    } else {
+      cardFilters.cardTypes.delete(target.value.toLowerCase());
+      setCardFilters(cardFilters);
+    }
+    handleFilterChange();
+  };
+
+  const handleFilterChange = () => {
+    setFilteredCardSelection(
+      cardSelection.filter((card) => {
+        // some of them dont say and we should assume creature
+        const cardType = card.type ? card.type : "creature";
+        for (const cardType of cardFilters.cardTypes) {
+          if (card.type.toLowerCase().includes(cardType.toLowerCase())) {
+            return true;
+          }
+        }
+        return false;
+      }),
+    );
+  };
 
   const handleCardSelect = (card: MtgCard) => {
     if (!selectedCards.find((c: MtgCard) => c.id === card.id)) {
@@ -110,9 +158,48 @@ function App() {
               }}
             >
               <h5>Type Filter</h5>
-              <Form.Check label="Option 1" />
-              <Form.Check label="Option 2" />
-              <Form.Check label="Option 3" />
+              <Form.Check
+                label="Creature"
+                value="Creature"
+                defaultChecked
+                onChange={({ target }) => updateTypeFilter(target)}
+              />
+              <Form.Check
+                label="Sorcery"
+                value="Sorcery"
+                defaultChecked
+                onChange={({ target }) => updateTypeFilter(target)}
+              />
+              <Form.Check
+                label="Land"
+                value="Land"
+                defaultChecked
+                onChange={({ target }) => updateTypeFilter(target)}
+              />
+              <Form.Check
+                label="Instant"
+                value="Instant"
+                defaultChecked
+                onChange={({ target }) => updateTypeFilter(target)}
+              />
+              <Form.Check
+                label="Planeswalker"
+                value="Planeswalker"
+                defaultChecked
+                onChange={({ target }) => updateTypeFilter(target)}
+              />
+              <Form.Check
+                label="Artifact"
+                value="Artifact"
+                defaultChecked
+                onChange={({ target }) => updateTypeFilter(target)}
+              />
+              <Form.Check
+                label="Enchantment"
+                value="Enchantment"
+                defaultChecked
+                onChange={({ target }) => updateTypeFilter(target)}
+              />
               <br />
               <Button onClick={() => setShowModal(true)}>Change Set</Button>
             </div>
@@ -129,7 +216,7 @@ function App() {
                 alignContent: "flex-start",
               }}
             >
-              {cardSelection
+              {filteredCardSelection
                 .filter((card) =>
                   card.name.toLowerCase().includes(search.toLowerCase()),
                 )

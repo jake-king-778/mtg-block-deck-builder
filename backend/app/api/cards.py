@@ -20,9 +20,11 @@ def get_standard_blocks(set_codes: List[str] = Query(None)) -> List[Card]:
         """
         SELECT  id, uuid, name, manacost, power, toughness, type, text, keywords, rarity, types, setcode
         FROM cards
-        WHERE setcode=%s
+        WHERE type NOT LIKE 'Basic Land%%'
+        AND (setcode=%s
         """
-        + (" OR setcode=%s" * (len(set_codes) - 1)),
+        + (" OR setcode=%s" * (len(set_codes) - 1))
+        + ")",
         set_codes,
     )
     return [
