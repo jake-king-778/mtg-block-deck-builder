@@ -56,5 +56,5 @@ class Card(BaseSchema):
     types: List[CardType]
     is_legendary: bool
     set_code: str
-    price: float
+    price: Optional[float]
     color_identity: List[str]
