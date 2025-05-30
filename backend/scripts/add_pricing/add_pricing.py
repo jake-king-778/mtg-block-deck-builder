@@ -27,7 +27,7 @@ for uuid, complicated_dictionary in prices_json["data"].items():
         if "tcgplayer" in complicated_dictionary["paper"]:
             if "retail" in complicated_dictionary["paper"]["tcgplayer"]:
                 if "normal" in complicated_dictionary["paper"]["tcgplayer"]["retail"]:
-                    price = complicated_dictionary["paper"]["tcgplayer"]["retail"]["normal"].values()[-1]
+                    price = list(complicated_dictionary["paper"]["tcgplayer"]["retail"]["normal"].values())[-1]
                     print(
                         cursor.execute(
                             f"""
