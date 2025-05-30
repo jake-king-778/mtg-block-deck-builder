@@ -21,22 +21,16 @@ const ManaTextRenderer = ({ text }: any) => {
   while ((match = regex.exec(text)) !== null) {
     const [fullMatch, symbol] = match;
     const matchStart = match.index;
-
-    // Push text before this match
     if (matchStart > lastIndex) {
       parts.push(text.slice(lastIndex, matchStart));
     }
-
-    // Push the IconRenderer component
     parts.push(
       <IconRenderer key={index} index={index} name={symbol.toLowerCase()} />,
     );
-
     index++;
     lastIndex = matchStart + fullMatch.length;
   }
 
-  // Push any remaining text after the last match
   if (lastIndex < text.length) {
     parts.push(text.slice(lastIndex));
   }
@@ -69,23 +63,67 @@ export default function MtgCardView({ card, onAddToDeck }: Props) {
           )}
           <br />
         </Card.Title>
-        {card.text && (
-          <Card.Text>
-            <strong>{card.type}</strong>
-            <br />
-            {card.text.split("\\n").map((line, index) => (
+        <Card.Text>
+          {card.rarity === "MYTHIC" && (
+            <span
+              style={{
+                display: "inline-block",
+                backgroundColor: "red",
+                width: "12px",
+                height: "12px",
+              }}
+            />
+          )}
+          {card.rarity === "RARE" && (
+            <span
+              style={{
+                display: "inline-block",
+                backgroundColor: "gold",
+                width: "12px",
+                height: "12px",
+              }}
+            />
+          )}
+          {card.rarity === "UNCOMMON" && (
+            <span
+              style={{
+                display: "inline-block",
+                backgroundColor: "lightblue",
+                width: "12px",
+                height: "12px",
+              }}
+            />
+          )}
+          {card.rarity === "COMMON" && (
+            <span
+              style={{
+                display: "inline-block",
+                backgroundColor: "gray",
+                width: "10px",
+                height: "12px",
+              }}
+            />
+          )}
+          <strong>{card.type}</strong>
+          <br />
+          {card.text &&
+            card.text.split("\\n").map((line, index) => (
               <React.Fragment key={index}>
                 <ManaTextRenderer text={line} />
                 <br />
               </React.Fragment>
             ))}
-          </Card.Text>
-        )}
+        </Card.Text>
         {(card.power || card.toughness) && (
           <span style={{ position: "absolute", bottom: "5px", right: "5px" }}>
             <strong>
               {card.power}/{card.toughness}
             </strong>
+          </span>
+        )}
+        {card.price && (
+          <span style={{ position: "absolute", bottom: "5px", left: "5px" }}>
+            ${card.price.toFixed(2)}
           </span>
         )}
         <br />

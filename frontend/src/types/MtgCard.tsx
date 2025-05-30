@@ -7,4 +7,7 @@ export default interface MtgCard {
   strength: string;
   text: string;
   type: string;
+  rarity: string;
+  price: number;
+  colorIdentity: string[];
 }

@@ -2,6 +2,7 @@ backend/.idea
 backend/.venv
 **/__pycache__/
 backend/scripts/db_init/AllPrintings.psql
+backend/scripts/add_pricing/AllPrices.json
 
 frontend/dist
 frontend/node_modules

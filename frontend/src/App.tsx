@@ -13,6 +13,7 @@ import { Spinner } from "react-bootstrap";
 
 type CardFilter = {
   cardTypes: Set<string>;
+  cardColors: Set<string>;
 };
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
       "artifact",
       "enchantment",
     ]),
+    cardColors: new Set(["G", "W", "B", "R", "U", "EMPTY"]),
   });
   const updateTypeFilter = (target: any) => {
     if (target.checked) {
@@ -74,18 +76,42 @@ function App() {
     handleFilterChange();
   };
 
+  const updateColorFilter = (target: any) => {
+    if (target.checked) {
+      cardFilters.cardColors.add(target.value);
+      setCardFilters(cardFilters);
+    } else {
+      cardFilters.cardColors.delete(target.value);
+      setCardFilters(cardFilters);
+    }
+    handleFilterChange();
+  };
+
   const handleFilterChange = () => {
     setFilteredCardSelection(
-      cardSelection.filter((card) => {
-        // some of them dont say and we should assume creature
-        const cardType = card.type ? card.type : "creature";
-        for (const cardType of cardFilters.cardTypes) {
-          if (card.type.toLowerCase().includes(cardType.toLowerCase())) {
-            return true;
+      cardSelection
+        .filter((card) => {
+          console.log(card.colorIdentity);
+          if (card.colorIdentity.length === 0) {
+            return cardFilters.cardColors.has("EMPTY");
           }
-        }
-        return false;
-      }),
+          for (const color of card.colorIdentity) {
+            if (cardFilters.cardColors.has(color)) {
+              return true;
+            }
+          }
+          return false;
+        })
+        .filter((card) => {
+          // some of them dont say and we should assume creature
+          const cardType = card.type ? card.type : "creature";
+          for (const cardType of cardFilters.cardTypes) {
+            if (card.type.toLowerCase().includes(cardType.toLowerCase())) {
+              return true;
+            }
+          }
+          return false;
+        }),
     );
   };
 
@@ -199,6 +225,44 @@ function App() {
                 value="Enchantment"
                 defaultChecked
                 onChange={({ target }) => updateTypeFilter(target)}
+              />
+              <br />
+              <h5>Color Filter</h5>
+              <Form.Check
+                label="Blue"
+                value="U"
+                defaultChecked
+                onChange={({ target }) => updateColorFilter(target)}
+              />
+              <Form.Check
+                label="Green"
+                value="G"
+                defaultChecked
+                onChange={({ target }) => updateColorFilter(target)}
+              />
+              <Form.Check
+                label="Red"
+                value="R"
+                defaultChecked
+                onChange={({ target }) => updateColorFilter(target)}
+              />
+              <Form.Check
+                label="White"
+                value="W"
+                defaultChecked
+                onChange={({ target }) => updateColorFilter(target)}
+              />
+              <Form.Check
+                label="Black"
+                value="B"
+                defaultChecked
+                onChange={({ target }) => updateColorFilter(target)}
+              />
+              <Form.Check
+                label="None"
+                value="EMPTY"
+                defaultChecked
+                onChange={({ target }) => updateColorFilter(target)}
               />
               <br />
               <Button onClick={() => setShowModal(true)}>Change Set</Button>

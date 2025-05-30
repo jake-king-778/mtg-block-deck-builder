@@ -6,10 +6,12 @@ from app.api.types.BaseSchema import BaseSchema
 
 
 class Rarity(Enum):
-    COMMON = 1
-    UNCOMMON = 2
-    RARE = 3
-    MYTHIC = 4
+    COMMON = "COMMON"
+    UNCOMMON = "UNCOMMON"
+    RARE = "RARE"
+    MYTHIC = "MYTHIC"
+    BONUS = "BONUS"
+    SPECIAL = "SPECIAL"
 
 
 class CardType(Enum):
@@ -54,3 +56,5 @@ class Card(BaseSchema):
     types: List[CardType]
     is_legendary: bool
     set_code: str
+    price: float
+    color_identity: List[str]

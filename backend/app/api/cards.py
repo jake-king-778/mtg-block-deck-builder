@@ -18,7 +18,7 @@ def get_standard_blocks(set_codes: List[str] = Query(None)) -> List[Card]:
     cursor = conn.cursor()
     cursor.execute(
         """
-        SELECT  id, uuid, name, manacost, power, toughness, type, text, keywords, rarity, types, setcode
+        SELECT  id, uuid, name, manacost, power, toughness, type, text, keywords, rarity, types, setcode, price, coloridentity
         FROM cards
         WHERE type NOT LIKE 'Basic Land%%'
         AND (setcode=%s
@@ -42,6 +42,8 @@ def get_standard_blocks(set_codes: List[str] = Query(None)) -> List[Card]:
             types=[CardType[t.upper()] for t in r[10].replace(" ", "").split(",")],
             is_legendary="legendary" in r[6].lower(),
             set_code=r[11],
+            price=r[12],
+            color_identity=r[13].split(",") if r[13] else [],
         )
         for r in cursor.fetchall()
     ]

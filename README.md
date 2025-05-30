@@ -18,6 +18,21 @@ docker-compose up
 And view the page at ip:8000/static/index.html, note: database will take a long time to initialize
 if its your first time.
 
+After this is complete you need to run two python scripts
+
+```
+cd scripts/add_out_of_standard_dates/
+python add_out_of_standard_dates.py
+```
+
+Now, you must go download all of their pricing information from Mtg json and store in scripts/add_pricing/
+
+```
+cd scripts/add_pricing/
+python add_pricing.py
+```
+
+
 ## Running locally
 
 Get the database running (this will take a long term if its your first time)
