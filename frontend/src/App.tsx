@@ -16,13 +16,20 @@ type CardFilter = {
   cardColors: Set<string>;
 };
 
+type CardCounter = {
+  card: MtgCard;
+  count: number;
+};
+
 function App() {
   // TODO:// boy did I let this file get big
   const [chosenBlock, setChosenBlock] = useState<StandardBlocks>();
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState<string>("");
-  const [selectedCards, setSelectedCards] = useState<MtgCard[]>([]);
+  const [selectedCards, setSelectedCards] = useState<Map<number, CardCounter>>(
+    new Map<number, CardCounter>(),
+  );
   const [cardSelection, setCardSelection] = useState<MtgCard[]>([]);
   const [filteredCardSelection, setFilteredCardSelection] = useState<MtgCard[]>(
     [],
@@ -116,9 +123,15 @@ function App() {
   };
 
   const handleCardSelect = (card: MtgCard) => {
-    if (!selectedCards.find((c: MtgCard) => c.id === card.id)) {
-      setSelectedCards(selectedCards.concat(card));
+    const newSelectedCards = new Map(selectedCards);
+
+    if (newSelectedCards.has(card.id)) {
+      const existing = newSelectedCards.get(card.id)!;
+      newSelectedCards.set(card.id, { ...existing, count: existing.count + 1 });
+    } else {
+      newSelectedCards.set(card.id, { card, count: 1 });
     }
+    setSelectedCards(newSelectedCards);
   };
   const changeBlock = (chosenBlock: StandardBlocks) => {
     setChosenBlock(chosenBlock);
@@ -307,11 +320,22 @@ function App() {
                 flexShrink: 0,
               }}
             >
-              <h5>Selected Cards</h5>
+              <h5>
+                Selected Cards [
+                {Array.from(selectedCards.values()).reduce(
+                  (sum, cardCount) => sum + cardCount.count,
+                  0,
+                )}
+                ]
+              </h5>
               <ListGroup>
-                {selectedCards.map((card) => (
-                  <ListGroup.Item key={card.id}>{card.name}</ListGroup.Item>
-                ))}
+                {Array.from(selectedCards.values()).map(
+                  (cardCount: CardCounter) => (
+                    <ListGroup.Item key={cardCount.card.id}>
+                      {cardCount.count} {cardCount.card.name}
+                    </ListGroup.Item>
+                  ),
+                )}
               </ListGroup>
             </div>
           </div>
