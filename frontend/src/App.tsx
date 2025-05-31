@@ -43,6 +43,10 @@ function App() {
     } else {
       setShowModal(true);
     }
+    const currentSelectedCards = localStorage.getItem("currentSelectedCards");
+    if (currentSelectedCards !== null) {
+      setSelectedCards(new Map(JSON.parse(currentSelectedCards)));
+    }
   }, []);
   useEffect(() => {
     if (chosenBlock) {
@@ -132,10 +136,41 @@ function App() {
       newSelectedCards.set(card.id, { card, count: 1 });
     }
     setSelectedCards(newSelectedCards);
+    localStorage.setItem(
+      "currentSelectedCards",
+      JSON.stringify(Array.from(selectedCards.entries())),
+    );
   };
+  const removeCard = (id: number) => {
+    const newSelectedCards = new Map(selectedCards);
+
+    if (newSelectedCards.has(id) && newSelectedCards.get(id).count > 1) {
+      const existing = newSelectedCards.get(id)!;
+      newSelectedCards.set(id, { ...existing, count: existing.count - 1 });
+    } else {
+      newSelectedCards.delete(id);
+    }
+    setSelectedCards(newSelectedCards);
+    localStorage.setItem(
+      "currentSelectedCards",
+      JSON.stringify(Array.from(selectedCards.entries())),
+    );
+  };
+
   const changeBlock = (chosenBlock: StandardBlocks) => {
     setChosenBlock(chosenBlock);
     setShowModal(false);
+  };
+
+  const copyDeckToClipBoard = () => {
+    navigator.clipboard.writeText(
+      Array.from(selectedCards.values())
+        .map(
+          (cardCount: CardCounter) =>
+            `${cardCount.count} ${cardCount.card.name} [${cardCount.card.minPriceSetCode}] ${cardCount.card.minPriceNumber}`,
+        )
+        .join("\n"),
+    );
   };
 
   return (
@@ -309,7 +344,7 @@ function App() {
             {/* Right sticky sidebar */}
             <div
               style={{
-                width: "220px",
+                width: "280px",
                 backgroundColor: "#f8f9fa",
                 borderLeft: "1px solid #ddd",
                 padding: "1rem",
@@ -321,21 +356,34 @@ function App() {
               }}
             >
               <h5>
-                Selected Cards [
-                {Array.from(selectedCards.values()).reduce(
-                  (sum, cardCount) => sum + cardCount.count,
-                  0,
-                )}
-                ]
+                Selected Cards{" "}
+                <Button
+                  size="sm"
+                  variant="info"
+                  onClick={() => copyDeckToClipBoard()}
+                >
+                  Copy
+                </Button>
               </h5>
               <ListGroup>
-                {Array.from(selectedCards.values()).map(
-                  (cardCount: CardCounter) => (
-                    <ListGroup.Item key={cardCount.card.id}>
-                      {cardCount.count} {cardCount.card.name}
-                    </ListGroup.Item>
-                  ),
-                )}
+                {selectedCards &&
+                  Array.from(selectedCards.values()).map(
+                    (cardCount: CardCounter) => (
+                      <ListGroup.Item
+                        key={cardCount.card.id}
+                        style={{ fontSize: "10pt" }}
+                      >
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          onClick={() => removeCard(cardCount.card.id)}
+                        >
+                          -
+                        </Button>
+                        &nbsp;{cardCount.count} {cardCount.card.name}
+                      </ListGroup.Item>
+                    ),
+                  )}
               </ListGroup>
             </div>
           </div>

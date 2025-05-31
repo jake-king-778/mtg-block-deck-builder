@@ -128,7 +128,9 @@ export default function MtgCardView({ card, onAddToDeck }: Props) {
         )}
         <br />
         <div style={{ position: "absolute", top: 0, right: 0 }}>
-          <Button onClick={() => onAddToDeck(card)}>+</Button>
+          <Button variant="success" onClick={() => onAddToDeck(card)}>
+            +
+          </Button>
         </div>
       </Card.Body>
     </Card>

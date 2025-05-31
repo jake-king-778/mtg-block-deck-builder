@@ -11,5 +11,6 @@ export default interface MtgCard {
   price: number;
   colorIdentity: string[];
   minPrice: number;
-  minSetCode: string;
+  minPriceSetCode: string;
+  minPriceNumber: string;
 }
