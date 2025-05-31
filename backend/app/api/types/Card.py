@@ -58,3 +58,5 @@ class Card(BaseSchema):
     set_code: str
     price: Optional[float]
     color_identity: List[str]
+    min_price: Optional[float]
+    cheapest_price_set_code: Optional[str]

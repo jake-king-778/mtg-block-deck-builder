@@ -18,8 +18,16 @@ def get_standard_blocks(set_codes: List[str] = Query(None)) -> List[Card]:
     cursor = conn.cursor()
     cursor.execute(
         """
-        SELECT  id, uuid, name, manacost, power, toughness, type, text, keywords, rarity, types, setcode, price, coloridentity
+        SELECT  id, uuid, name, manacost, power, toughness, type, text, keywords, rarity, types, setcode, price, coloridentity, min_price, min_price_set_code
         FROM cards
+        LEFT JOIN (
+            SELECT * FROM (
+                SELECT min_price, min_price_set_code, min_price_name FROM (
+                SELECT price min_price, setcode min_price_set_code, name min_price_Name, rank() OVER (PARTITION BY name ORDER BY price ASC) rank
+                FROM cards
+                WHERE price is not null)
+            WHERE rank = 1)
+        ) ON name = min_price_Name
         WHERE type NOT LIKE 'Basic Land%%'
         AND (setcode=%s
         """
@@ -44,6 +52,8 @@ def get_standard_blocks(set_codes: List[str] = Query(None)) -> List[Card]:
             set_code=r[11],
             price=r[12],
             color_identity=r[13].split(",") if r[13] else [],
+            min_price=r[14],
+            cheapest_price_set_code=r[15],
         )
         for r in cursor.fetchall()
     ]

@@ -123,7 +123,7 @@ export default function MtgCardView({ card, onAddToDeck }: Props) {
         )}
         {card.price && (
           <span style={{ position: "absolute", bottom: "5px", left: "5px" }}>
-            ${card.price.toFixed(2)}
+            ${card.minPrice.toFixed(2)}
           </span>
         )}
         <br />

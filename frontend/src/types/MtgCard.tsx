@@ -10,4 +10,6 @@ export default interface MtgCard {
   rarity: string;
   price: number;
   colorIdentity: string[];
+  minPrice: number;
+  minSetCode: string;
 }
