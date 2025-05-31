@@ -9,7 +9,7 @@ import SetSelectionModal from "./components/SetSelectionModal";
 import getUrl from "./utils/url";
 import type MtgCard from "./types/MtgCard";
 import MtgCardView from "./components/MtgCardView";
-import { Spinner } from "react-bootstrap";
+import { Modal, Spinner } from "react-bootstrap";
 
 type CardFilter = {
   cardTypes: Set<string>;
@@ -34,6 +34,8 @@ function App() {
   const [filteredCardSelection, setFilteredCardSelection] = useState<MtgCard[]>(
     [],
   );
+  const [showClipboadCopyModal, setShowClipboadCopyModal] = useState(false);
+  const [clipboardCopyModalText, setClipboardCopyModalText] = useState("");
 
   //init
   useEffect(() => {
@@ -45,7 +47,11 @@ function App() {
     }
     const currentSelectedCards = localStorage.getItem("currentSelectedCards");
     if (currentSelectedCards !== null) {
-      setSelectedCards(new Map(JSON.parse(currentSelectedCards)));
+      const selectedCards: Map<number, CardCounter> = new Map(
+        JSON.parse(currentSelectedCards),
+      );
+      setSelectedCards(selectedCards);
+      setClipboardCopyModalText(tcgPlayerBulkText(selectedCards));
     }
   }, []);
   useEffect(() => {
@@ -136,6 +142,8 @@ function App() {
       newSelectedCards.set(card.id, { card, count: 1 });
     }
     setSelectedCards(newSelectedCards);
+    setClipboardCopyModalText(tcgPlayerBulkText(newSelectedCards));
+    console.log(clipboardCopyModalText);
     localStorage.setItem(
       "currentSelectedCards",
       JSON.stringify(Array.from(selectedCards.entries())),
@@ -151,6 +159,8 @@ function App() {
       newSelectedCards.delete(id);
     }
     setSelectedCards(newSelectedCards);
+    setClipboardCopyModalText(tcgPlayerBulkText(newSelectedCards));
+    console.log(clipboardCopyModalText);
     localStorage.setItem(
       "currentSelectedCards",
       JSON.stringify(Array.from(selectedCards.entries())),
@@ -162,15 +172,13 @@ function App() {
     setShowModal(false);
   };
 
-  const copyDeckToClipBoard = () => {
-    navigator.clipboard.writeText(
-      Array.from(selectedCards.values())
-        .map(
-          (cardCount: CardCounter) =>
-            `${cardCount.count} ${cardCount.card.name} [${cardCount.card.minPriceSetCode}] ${cardCount.card.minPriceNumber}`,
-        )
-        .join("\n"),
-    );
+  const tcgPlayerBulkText = (updatedSelectedCards) => {
+    return Array.from(updatedSelectedCards.values())
+      .map(
+        (cardCount: CardCounter) =>
+          `${cardCount.count} ${cardCount.card.name} [${cardCount.card.minPriceSetCode}] ${cardCount.card.minPriceNumber}`,
+      )
+      .join("\n");
   };
 
   return (
@@ -360,7 +368,7 @@ function App() {
                 <Button
                   size="sm"
                   variant="info"
-                  onClick={() => copyDeckToClipBoard()}
+                  onClick={() => setShowClipboadCopyModal(true)}
                 >
                   Copy
                 </Button>
@@ -389,6 +397,29 @@ function App() {
           </div>
         )}
       </div>
+      <Modal
+        show={showClipboadCopyModal}
+        onHide={() => setShowClipboadCopyModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Dumb Modal</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            Apprarently I cant use the clipboard without https so copy this
+            instead *sigh*
+          </p>
+          <pre>{clipboardCopyModalText}</pre>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowClipboadCopyModal(false)}
+          >
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
